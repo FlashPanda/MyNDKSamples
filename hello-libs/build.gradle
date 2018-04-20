@@ -1,8 +1,16 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
+// 顶层构建文件，你可以添加构建配置，用于所有的子项目和模块
 
+/**
+ * buildscript{}代码块用来定义项目中所有模块共用的Gradle存储区和依赖项。你不能把需要包含
+ * 的依赖项放在这里。
+ */
 buildscript {
-    
-    repositories {
+
+	/**
+	 * repositories{}开码块用来配置存储区，Gradle会用这些信息去寻找或下载需要的依赖项。
+	 */
+	repositories {
         google()
         jcenter()
     }
