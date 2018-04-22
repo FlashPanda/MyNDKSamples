@@ -1,10 +1,41 @@
+/**
+ * The first line in the build configuration applies the Android plugin for
+ * Gradle to this build and makes the android block available to specify
+ * Android-specific build options.
+ * 没搞太懂，大概的意思是说这一行是为了让下面的android语句块有效
+ */
 apply plugin: 'com.android.application'
 
+/**
+ * 这个语句块就是配置安卓相关的构建选项
+ */
 android {
+	/**
+	 * Gradle需要使用Android API等级
+	 */
     compileSdkVersion 26
+	
+	/**
+     * The defaultConfig block encapsulates default settings and entries for all
+     * build variants, and can override some attributes in main/AndroidManifest.xml
+     * dynamically from the build system. You can configure product flavors to override
+     * these values for different versions of your app.
+	 * defaultConfig模块封装了默认的设置和变量，并且能够重载main/AndroidManifest.xml中
+	 * 的一些属性，根据构建系统中的值动态重载。你可以配置产品风味在这个地方，重载这些值
+	 * 来获取不同的版本。
+     */
     defaultConfig {
+		/**
+		 * 标识了发布这个包时候的唯一ID
+		 */
         applicationId "com.example.czd.hello_libs"
+		/**
+		 * app支持的最低API等级
+		 */
         minSdkVersion 15
+		/**
+		 * 测试app用的API等级
+		 */
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"
@@ -15,6 +46,12 @@ android {
             }
         }
     }
+	
+	/**
+	 * 用来配置多种构建类型。
+	 * 默认情况下是debug和release两种。debug配置不显示，它包含了调试工具并且被一个debug key
+	 * 签名。
+	 */
     buildTypes {
         release {
             minifyEnabled false
