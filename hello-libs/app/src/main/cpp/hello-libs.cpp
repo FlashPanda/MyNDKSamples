@@ -14,7 +14,7 @@ Java_com_example_hellolibs_MainActivity_stringFronJNI (JNIEnv* env, jobject thiz
 	// 越简单越好
 	auto ticks = GetTicks();
 
-	for (auto exp = ; exp < 32; ++exp) {
+	for (auto exp = 0; exp < 32; ++exp) {
 		volatile unsigned val = gpower (exp);
 		(void) val;
 	}

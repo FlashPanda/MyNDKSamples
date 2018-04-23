@@ -58,11 +58,18 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-//    externalNativeBuild {
-//        cmake {
-//            path ""
-//        }
-//    }
+
+	sourceSets{
+		main {
+			// 将共享库添加到apk中
+			jniLibs.srcDirs = ['../distribution/gperf/lib']
+		}
+	}
+	externalNativeBuild {
+		cmake {
+			path 'src/main/cpp/CMakeLists.txt'
+		}
+	}
 }
 
 dependencies {

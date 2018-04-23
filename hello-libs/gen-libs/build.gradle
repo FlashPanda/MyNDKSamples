@@ -13,6 +13,12 @@ android {
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
+        // 这一部分在Link之后没有自动加上去，现在补上
+        externalNativeBuild {
+            cmake {
+                targets 'gmath', 'gperf'
+            }
+        }
     }
 
     buildTypes {
@@ -22,6 +28,11 @@ android {
         }
     }
 
+    externalNativeBuild {
+        cmake {
+            path 'src/main/cpp/CMakeLists.txt'
+        }
+    }
 }
 
 dependencies {
