@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.4.1)
 
 # 配置三方库
 # 设置三方库的路径，CMAKE_SOURCE_DIR表示当前的目录
-set(distribution_DIR) ${CMAKE_SOURCE_DIR}/../../../../distribution)
+set(distribution_DIR ${CMAKE_SOURCE_DIR}/../../../../distribution)
 
 # 添加静态库支持
 # 原型为：add_library(<name> <SHARED|STATIC|MODULE|UNKNOWN> IMPORTED)

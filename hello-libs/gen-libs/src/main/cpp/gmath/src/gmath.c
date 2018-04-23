@@ -6,7 +6,7 @@
 #include <android/log.h>
 
 #if defined(__GNUC__) && __GNUC__ >= 4
-#define GAMATH_EXPORT __attribute__((visibility("default")))
+#define GMATH_EXPORT __attribute__((visibility("default")))
 #elif defined(__SUNPRO_C) && (__SUNPRO_C >= 0x590)
 #define GMATH_EXPORT __attribute__((visibility("default")))
 #else
@@ -16,7 +16,7 @@
 #define LOGE(...)\
 	((void)__android_log_print(ANDROID_LOG_ERROR, "gmath::", __VA_ARGS__))
 
-GAMTH_EXPORT unsigned gpower(unsigned n){
+GMATH_EXPORT unsigned gpower(unsigned n){
 	if (n == 0)
 		return 1;
 	if (n > 31) {

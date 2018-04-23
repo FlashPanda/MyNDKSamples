@@ -6,7 +6,7 @@ add_library(gperf
 			SHARED
 			src/gperf.c)
 			
-set(distribution_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../../../../distribution_DIR)
+set(distribution_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../../../../distribution)
 set_target_properties(gperf
 					  PROPERTIES
 					  LIBRARY_OUTPUT_DIRECTORY
