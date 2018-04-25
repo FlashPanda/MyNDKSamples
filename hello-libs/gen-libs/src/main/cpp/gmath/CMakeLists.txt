@@ -2,13 +2,15 @@ cmake_minimum_required(VERSION 3.4.1)
 
 set(CMAKE_VERBOSE_MAKEFILE on)
 
-add_library(gmath STATIC src/gmath.c)
+add_library(gmath
+            STATIC
+            src/gmath.c)
 
 # 把库复制出去。需要留下一个静态库来通过gradle的检查
 set(distribution_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../../../../distribution)
 set_target_properties(gmath
 					  PROPERTIES
-					  ARCHIVE_OUTPUT_DIRECTIORY
+					  ARCHIVE_OUTPUT_DIRECTORY
 					  "${distribution_DIR}/gmath/lib/${ANDROID_ABI}")
 					  
 # 复制库的头文件

@@ -10,7 +10,7 @@
 	((void)__android_log_print)(ANDROID_LOG_INFO, "hello-libs::", __VA_ARGS__))
 
 extern "C" JNIEXPORT jstring JNICALL
-Java_com_example_hellolibs_MainActivity_stringFronJNI (JNIEnv* env, jobject thiz) {
+Java_com_example_czd_hello_1libs_MainActivity_stringFromJNI (JNIEnv* env, jobject thiz) {
 	// 越简单越好
 	auto ticks = GetTicks();
 
@@ -20,7 +20,7 @@ Java_com_example_hellolibs_MainActivity_stringFronJNI (JNIEnv* env, jobject thiz
 	}
 	ticks = GetTicks() - ticks;
 
-	LOGI("calculation time: %" PRIu64, ticks);
+	//LOGI("calculation time: %u","hello-libs::", ticks);
 
 	return env->NewStringUTF("Hello from JNI LIBS!");
 }
