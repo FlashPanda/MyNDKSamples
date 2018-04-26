@@ -1,4 +1,4 @@
-package com.example.czd.nativeactivity;
+package com.example.czd.native_activity;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.example.czd.nativeactivity", appContext.getPackageName());
+        assertEquals("com.example.czd.native_activity", appContext.getPackageName());
     }
 }

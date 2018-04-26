@@ -1,4 +1,4 @@
-package com.example.czd.nativeactivity;
+package com.example.czd.native_activity;
 
 import org.junit.Test;
 
