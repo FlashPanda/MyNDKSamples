@@ -16,6 +16,12 @@ add_library(native_app_glue STATIC
 			
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11 -Wall -fno-exceptions -fno-rtti")
 
+set(ndk_helper_dir ../../../../common/ndk_helper)
+add_subdirectory(${ndk_helper_dir} ndk_helper)
+
+set(CMAKE_SHARED_LINKER_FLAGS
+	"${CMAKE_SHARED_LINKER_FLAGS} -u ANativeActivity_onCreate")
+
 add_library( # Sets the name of the library.
              native-lib
 
@@ -27,7 +33,9 @@ add_library( # Sets the name of the library.
              TeapotRenderer.cpp)
 
 target_include_directories(native-lib PRIVATE
-    ${ANDROID_NDK}/sources/android/native_app/glue)
+    ${ANDROID_NDK}/sources/android/native_app_glue
+	${ANDROID_NDK}/sources/android/cpufeatures
+	${ndk_helper_dir})
 
 # Searches for a specified prebuilt library and stores the path as a
 # variable. Because CMake includes system libraries in the search path by
@@ -46,9 +54,10 @@ find_library( # Sets the name of the path variable.
 # can link multiple libraries, such as libraries you define in this
 # build script, prebuilt third-party libraries, or system libraries.
 
-target_link_libraries( # Specifies the target library.
-                       native-lib
-
-                       # Links the target library to the log library
-                       # included in the NDK.
-                       ${log-lib} )
+target_link_libraries( native-lib
+					   native_app_glue
+					   atomic
+					   EGL
+					   GLESv2
+					   log
+					   ndk-helper)
