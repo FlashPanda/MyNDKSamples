@@ -76,7 +76,7 @@ public:
     void Init();
     void Render();
     void Update(float dTime);
-    void Bind(ndk_helper::TapCamera* camera);
+    bool Bind(ndk_helper::TapCamera* camera);
     void Unload();
     void UpdateViewport();
 };

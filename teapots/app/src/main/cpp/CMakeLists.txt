@@ -55,6 +55,7 @@ find_library( # Sets the name of the path variable.
 # build script, prebuilt third-party libraries, or system libraries.
 
 target_link_libraries( native-lib
+                       android
 					   native_app_glue
 					   atomic
 					   EGL
