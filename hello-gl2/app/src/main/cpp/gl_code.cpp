@@ -42,7 +42,123 @@ GLuint loadShader (GLenum shaderType, const char* pSource) {
         glCompileShader (shader);
         GLint compiled = 0;
         glGetShaderiv (shader, GL_COMPILE_STATUS, &compiled);
+
+        // 下面都是进行日志输出
+        if (!compiled) {
+            GLint infoLen = 0;
+            glGetShaderiv (shader, GL_INFO_LOG_LENGTH, &infoLen);
+            if (infoLen) {
+                char* buf = (char*) malloc (infoLen);
+                if (buf) {
+                    glGetShaderInfoLog (shader, infoLen, NULL, buf);
+                    LOGE ("Could not compile shader %d:\n%s\n", shaderType, buf);
+                    free (buf);
+                }
+                glDeleteShader (shader);
+                shader = 0;
+            }
+        }
     }
+}
+
+/**
+ * 创建着色器程序
+ * @param pVertexSource     定点着色器源码
+ * @param pFragmentSource   片段着色器源码
+ * @return {GLuint}
+ */
+GLuint createProgram (const char* pVertexSource, const char* pFragmentSource) {
+    GLuint vertexShader = loadShader (GL_VERTEX_SHADER, pVertexSource);
+    if (!vertexShader) {
+        return 0;
+    }
+
+    GLuint pixelShader = loadShader (GL_FRAGMENT_SHADER, pFragmentSource);
+    if (!pixelShader) {
+        return 0;
+    }
+
+    GLuint program = glCreateProgram ();
+    if (!program) {
+        LOGE ("Could not create Program\n");
+        return 0;
+    }
+
+    glAttachShader (program, vertexShader);
+    checkGlError ("glAttachShader");
+    glAttachShader (program, pixelShader);
+    checkGlError ("glAttachShader");
+    glLinkProgram (program);
+    GLint linkStatus = GL_FALSE;
+    glGetProgramiv (program, GL_LINK_STATUS, &linkStatus);
+    if (linkStatus != GL_TRUE) {
+        GLint bufLength = 0;
+        glGetProgramiv (program, GL_INFO_LOG_LENGTH, &bufLength);
+        if (bufLength) {
+            char* buf = (char*) malloc (bufLength);
+            if (buf) {
+                glGetProgramInfoLog (program, bufLength, NULL, buf);
+                LOGE ("Could not link program:\n%s\n", buf);
+                free (buf);
+            }
+        }
+        glDeleteProgram (program);
+        return 0;
+    }
+
+    return program;
+}
+
+GLuint gProgram;
+GLuint gvPositionHandle;
+
+// 设置图形系统
+bool setupGraphics (int w, int h) {
+    printGLString("Version", GL_VERSION);
+    printGLString("Vendor", GL_VENDOR);
+    printGLString("Renderer", GL_RENDERER);
+    printGLString ("Extensions", GL_EXTENSIONS);
+
+    LOGI ("setupGraphics (%d, %d)", w, h);
+    gProgram = createProgram (gVertexShader, gFragmentShader);
+    if (!gProgram) {
+        LOGE ("Could not create program.");
+        return false;
+    }
+    gvPositionHandle = glGetAttribLocation(gProgram, "vPosition");
+    checkGlError ("glGetAttribLocation");
+    LOGI ("glGetAttribLocation (\"vPosition\") = %d\n", gvPositionHandle);
+
+    glViewport (0, 0, w, h);
+    checkGlError("glViewport");
+    return true;
+}
+
+const GLfloat gTriangleVertices[] = {
+        0.f, 0.5f, -0.5f, -0.5f, 0.5f, -0.5f
+};
+
+void renderFrame() {
+    static float grey;
+    grey += 0.01f;
+    if (grey > 1.0f) {
+        grey = 0.0f;
+    }
+
+    glClearColor (grey, grey, grey, 1.0f);
+    checkGlError("glClearError");
+    glClear (GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+    checkGlError ("glClear");
+
+    glUseProgram (gProgram);
+    checkGlError("glUseProgram");
+
+    glVertexAttribPointer (gvPositionHandle, 2, GL_FLOAT, GL_FALSE, 0, gTriangleVertices);
+    checkGlError("glVertexAttribPointer");
+    glEnableVertexAttribArray(gvPositionHandle);
+    checkGlError("glEnableVertexAttribArray");
+    glDrawArrays (GL_TRIANGLES, 0, 3);
+    checkGlError("glDrawArrays");
 }
 
 extern "C" {
