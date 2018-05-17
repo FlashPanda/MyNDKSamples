@@ -66,10 +66,20 @@ public class GL2JNIView extends GLSurfaceView {
         public EGLContext createContext (EGL10 egl, EGLDisplay display, EGLConfig eglConfig) {
             Log.w (TAG, "createOpenGL ES 2.0 context");
             checkEglError ("Before eglCreateContext", egl);
+            /**
+             * 属性列表指定的格式就是这样，必须以EGL_CONTEXT_CLIENT_VERSION开头，后面紧跟一个整数值表示OpenGL ES的版本号
+             */
             int[] attrib_list = {EGL_CONTEXT_CLIENT_VERSION, 2, EGL10.EGL_NONE};
             /**
              * 这是一个重度函数，它所做的事情非常重要
-             *
+             * 函数的参数：
+             * EGLDisplay display,  关联的显示器
+             * EGLConfig config,    指定egl帧缓存的配置，这是上下文可以获取到的资源
+             * EGLContext share_context,   要共享缓存给哪个EGL上下文。如果设置EGL_NO_CONTEXT表示要共享给谁
+             * EGLint const * attrib_list   指定创建EGL所需的属性。只有EGL_CONTEXT_CLIENT_VERSION可以指定
+             * eglCreateContext为当前渲染API创建了一个EGL渲染上下文。当前渲染API就是eglBindAPI绑定的东西。
+             * 函数的返回值是一个上下文的句柄。这个上下文就可以用来渲染EGL绘制表面。如果创建失败，函数会
+             * 返回一个EGL_NO_CONTEXT。
              */
             EGLContext context = egl.eglCreateContext(display, eglConfig, EGL10.EGL_NO_CONTEXT, attrib_list);
             checkEglError("After eglContextContext", egl);
@@ -114,6 +124,23 @@ public class GL2JNIView extends GLSurfaceView {
         public EGLConfig chooseConfig (EGL10 egl, EGLDisplay display) {
             // 获取EGL最低配置
             int[] num_config = new int[1];
+            /**
+             * 这也是一个要重度用的函数。
+             * 返回匹配指定属性的EGL帧缓存配置列表
+             * 函数参数：
+             * EGLDisplay display,      关联的显示器
+             * EGLint const * attrib_list,      指定的属性
+             * EGLConfig * configs,     输出的帧缓存配置列表
+             * EGLint config_size,     帧缓存配置列表的大小
+             * EGLint * num_config      符合条件的配置个数
+             * 函数返回时，将所有的EGL帧缓存配置保存到configs中，config_size指定了配置列表最多可以接受多少个配置信息
+             * num_config返回了符合条件的配置数量
+             * 如果configs设置成NULL，config_size会被忽略
+             * 一般使用的时候都是先将configs设置成NULL,调用一次函数，获得配置个数，再根据配置个数new一个相应大小的配置
+             * 列表数组出来，再调用一次获取信息。
+             *
+             * 我们下面就是这么做的
+             */
             // 获取满足指定属性的所有配置
             egl.eglChooseConfig (display, s_configAttribs2, null, 0, num_config);
 
@@ -138,12 +165,12 @@ public class GL2JNIView extends GLSurfaceView {
                 int d = findConfigAttrib (egl, display, config, EGL10.EGL_DEPTH_SIZE, 0);
                 int s = findConfigAttrib (egl, display, config, EGL10.EGL_STENCIL_SIZE, 0);
 
-                // 我们需要最少的深度尺寸和模板尺寸
+                // 检查深度合模板属性是否达到最低要求
                 if (d < mDepthSize || s < mStencilSize) {
                     continue;
                 }
 
-                // 我们需要额外的匹配
+                // rgba属性的检查
                 int r = findConfigAttrib (egl, display, config, EGL10.EGL_RED_SIZE, 0);
                 int g = findConfigAttrib (egl, display, config, EGL10.EGL_GREEN_SIZE, 0);
                 int b = findConfigAttrib (egl, display, config, EGL10.EGL_BLUE_SIZE, 0);
@@ -157,6 +184,14 @@ public class GL2JNIView extends GLSurfaceView {
 
         private int findConfigAttrib (EGL10 egl, EGLDisplay display,
                                       EGLConfig config, int attribute, int defaultValue) {
+            /**
+             * 返回EGL帧缓存配置的信息
+             * 函数的参数：
+             * EGLDisplay display,      相关联的显示器
+             * EGLConfig config,        要查询的配置
+             * EGLint attribute,        需要返回的属性
+             * 	EGLint * value          返回值
+             */
             if (egl.eglGetConfigAttrib (display, config, attribute, mValue)) {
                 return mValue[0];
             }
